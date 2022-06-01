@@ -51,3 +51,48 @@ Aixì es mostra per pantalla:
 ![image](https://user-images.githubusercontent.com/101355262/171416969-b64e2602-d6cd-4941-8680-7934a88d63ac.png)
 
 
+# Codi 2a part
+
+#include <Arduino.h>
+
+volatile int interruptCounter;
+int totalInterruptCounter;
+hw_timer_t * timer = NULL;
+portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+void IRAM_ATTR onTimer() {
+portENTER_CRITICAL_ISR(&timerMux);
+interruptCounter++;
+portEXIT_CRITICAL_ISR(&timerMux);
+}
+void setup() {
+Serial.begin(115200);
+timer = timerBegin(0, 80, true);
+timerAttachInterrupt(timer, &onTimer, true);
+timerAlarmWrite(timer, 1000000, true);
+timerAlarmEnable(timer);
+}
+void loop() {
+if (interruptCounter > 0) {
+portENTER_CRITICAL(&timerMux);
+interruptCounter--;
+portEXIT_CRITICAL(&timerMux);
+totalInterruptCounter++;
+Serial.print("An interrupt as occurred. Total number: ");
+Serial.println(totalInterruptCounter);
+}
+}
+
+# Funcionament del programa
+
+La funció d'aquest programa es que cada un cert temps es produeixi una interrupció de manera automàtica sense necessitat de premer cap botó.
+
+Primer declararem les diferents variables necessàries. Seguidament en el void setup declarem el timer, el qual determina el temps que pasa entre cada interrupció.
+
+En el loop hi ha un sumatori de manera que es conten les interrupcions que s'han produït i les mostri per pantalla amb el missatge seguent: "An interrupt as occurred. Total number: //aqui ens dirà el total d'interrupcions que portem."
+
+El programa es mostra per pantalla de la següent manera:
+
+![image](https://user-images.githubusercontent.com/101355262/171418790-f0273152-399c-46b0-bc26-ff6dc38ff8c0.png)
+
+
+
