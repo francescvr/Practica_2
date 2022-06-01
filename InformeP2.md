@@ -33,6 +33,7 @@ Serial.println("Interrupt Detached!");
 }
 }
 
+
 # Funcionament del programa
 
 En el codi de la pràctica, primer caldrà assignar un pin per a la sortida on connectarem el cable pel polsador, en aquest cas amb la línia de codi 
